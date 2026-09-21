@@ -1,0 +1,310 @@
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a1a;--surface:rgba(15,15,35,0.85);--glass:rgba(25,25,60,0.55);
+  --border:rgba(100,100,200,0.15);--text:#e2e8f0;--text-dim:#94a3b8;
+  --primary:#6366f1;--primary-glow:rgba(99,102,241,0.3);
+  --cyan:#06b6d4;--green:#10b981;--amber:#f59e0b;--rose:#f43f5e;
+  --violet:#8b5cf6;--pink:#ec4899;--teal:#14b8a6;
+  --radius:12px;--radius-lg:20px;
+  --shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 20%,rgba(99,102,241,0.08),transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(6,182,212,0.06),transparent 50%);pointer-events:none;z-index:0}
+
+.app{display:flex;height:100vh;position:relative;z-index:1}
+
+/* Sidebar */
+.sidebar{width:240px;min-width:240px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 12px;gap:8px}
+.logo{display:flex;align-items:center;gap:12px;padding:8px 12px;margin-bottom:20px}
+.logo-icon{width:40px;height:40px}
+.logo-icon svg{width:100%;height:100%}
+.logo-title{font-size:18px;font-weight:700;background:linear-gradient(135deg,var(--primary),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo-sub{display:block;font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px}
+
+.nav-items{display:flex;flex-direction:column;gap:4px;flex:1}
+.nav-btn{display:flex;align-items:center;gap:12px;padding:10px 14px;border:none;background:transparent;color:var(--text-dim);border-radius:var(--radius);cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;text-align:left}
+.nav-btn svg{width:18px;height:18px;flex-shrink:0}
+.nav-btn:hover{background:rgba(99,102,241,0.1);color:var(--text)}
+.nav-btn.active{background:rgba(99,102,241,0.15);color:var(--primary);font-weight:500}
+
+.nav-footer{padding:12px}
+.status-indicator{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-dim)}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#ef4444;transition:background .3s}
+.status-indicator.online .status-dot{background:var(--green);box-shadow:0 0 8px var(--green)}
+
+/* Main Content */
+.main-content{flex:1;overflow-y:auto;padding:32px 40px;scroll-behavior:smooth}
+.main-content::-webkit-scrollbar{width:6px}
+.main-content::-webkit-scrollbar-track{background:transparent}
+.main-content::-webkit-scrollbar-thumb{background:rgba(100,100,200,0.2);border-radius:3px}
+
+.page{display:none;animation:fadeIn .4s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.page-header{margin-bottom:32px}
+.page-header h1{font-size:28px;font-weight:700;margin-bottom:6px}
+.page-header p{color:var(--text-dim);font-size:14px}
+
+/* Glass Card */
+.glass{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-lg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{padding:20px;display:flex;align-items:center;gap:16px}
+.stat-icon{width:44px;height:44px;border-radius:12px;background:rgba(99,102,241,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stat-icon svg{width:22px;height:22px;stroke:var(--accent)}
+.stat-value{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.stat-label{font-size:12px;color:var(--text-dim);display:block;margin-top:2px}
+
+/* Dashboard Grid */
+.dashboard-grid{display:grid;grid-template-columns:1fr 340px;gap:20px}
+.dashboard-bands{padding:20px 24px;margin-top:20px}
+.dashboard-bands .panel-header{margin-bottom:16px}
+.dashboard-band-bars{display:flex;flex-direction:column;gap:10px}
+.chart-panel{padding:24px;min-height:400px}
+.chart-panel .panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.panel-header h3{font-size:16px;font-weight:600}
+.chart-controls{display:flex;gap:6px}
+.chart-btn{padding:6px 14px;border:1px solid var(--border);background:transparent;color:var(--text-dim);border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s}
+.chart-btn:hover,.chart-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+
+.chart-container{position:relative;height:300px}
+.chart-container canvas{width:100%!important;height:100%!important}
+.chart-legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:16px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim);cursor:pointer;transition:opacity .2s}
+.legend-item:hover{opacity:1}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+.recent-panel{padding:24px;max-height:460px;overflow-y:auto}
+.recent-panel::-webkit-scrollbar{width:4px}
+.recent-panel::-webkit-scrollbar-thumb{background:rgba(100,100,200,0.2);border-radius:2px}
+.recent-list{display:flex;flex-direction:column;gap:8px}
+.recent-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius);background:rgba(255,255,255,0.03);cursor:pointer;transition:all .2s;border:1px solid transparent}
+.recent-item:hover{background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.2)}
+.recent-icon{width:36px;height:36px;border-radius:10px;background:rgba(99,102,241,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.recent-info{flex:1;min-width:0}
+.recent-info strong{display:block;font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recent-info span{font-size:11px;color:var(--text-dim)}
+.recent-delete{width:24px;height:24px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;border-radius:6px;font-size:14px;display:flex;align-items:center;justify-content:center;opacity:0;transition:all .2s}
+.recent-item:hover .recent-delete{opacity:1}
+.recent-delete:hover{background:rgba(244,63,94,0.2);color:var(--rose)}
+.empty-state{text-align:center;color:var(--text-dim);padding:32px;font-size:13px}
+
+/* Simulator */
+.sim-input-area{padding:24px;margin-bottom:24px}
+.input-group{display:flex;gap:12px;align-items:flex-start}
+.input-group textarea{flex:1;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;color:var(--text);font-family:inherit;font-size:14px;resize:none;transition:border-color .2s}
+.input-group textarea:focus{outline:none;border-color:var(--primary)}
+.btn-primary{padding:12px 24px;border:none;background:linear-gradient(135deg,var(--primary),var(--violet));color:#fff;border-radius:var(--radius);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s;white-space:nowrap}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 20px var(--primary-glow)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary svg{width:16px;height:16px}
+.btn-secondary{padding:10px 20px;border:1px solid var(--border);background:transparent;color:var(--text);border-radius:var(--radius);font-family:inherit;font-size:13px;cursor:pointer;transition:all .2s}
+.btn-secondary:hover{border-color:var(--primary);color:var(--primary)}
+
+.quick-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.tag-btn{padding:6px 14px;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--text-dim);border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s}
+.tag-btn:hover{background:rgba(99,102,241,0.1);border-color:var(--primary);color:var(--text)}
+
+.sim-result{padding:32px;min-height:400px}
+.result-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;color:var(--text-dim)}
+.placeholder-icon{margin-bottom:16px}
+
+/* Result Display */
+.result-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.result-header h2{font-size:20px;font-weight:700}
+.result-badge{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.result-badge.primary{background:rgba(99,102,241,0.2);color:var(--primary)}
+.result-badge.confidence{background:rgba(16,185,129,0.2);color:var(--green)}
+
+.hormone-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+.hormone-card{padding:14px;border-radius:var(--radius);background:rgba(255,255,255,0.03);border:1px solid var(--border);cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.hormone-card:hover{border-color:var(--primary);transform:translateY(-2px)}
+.hormone-card .hormone-name{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.hormone-card .hormone-value{font-size:20px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.hormone-card .hormone-bar{position:absolute;bottom:0;left:0;height:3px;border-radius:0 0 var(--radius) var(--radius);transition:width .6s ease}
+.hormone-card .hormone-spark{margin-top:8px;height:24px}
+
+.result-details{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.detail-card{padding:16px;border-radius:var(--radius);background:rgba(255,255,255,0.03);border:1px solid var(--border)}
+.detail-card span{display:block;font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.detail-card b{font-size:14px;font-weight:600;display:block;margin-bottom:6px}
+.detail-card p{font-size:13px;color:var(--text-dim);line-height:1.6}
+
+/* Emotions — compact */
+.emotion-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px}
+.emotion-card{padding:10px 6px;border:1px solid var(--border);border-radius:10px;background:var(--glass);cursor:pointer;text-align:center;transition:all .2s;backdrop-filter:blur(10px)}
+.emotion-card:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 4px 12px rgba(99,102,241,0.12)}
+.emotion-card.selected{border-color:var(--primary);background:rgba(99,102,241,0.15)}
+.emotion-card .emotion-icon{font-size:11px;font-weight:700;letter-spacing:0.5px;margin-bottom:4px;display:block;color:var(--text-dim);font-family:'JetBrains Mono',monospace}
+.emotion-card .emotion-name{font-size:11px;font-weight:600;line-height:1.2}
+
+.emotion-result{padding:32px;min-height:300px}
+
+/* Brain Map */
+
+/* Brain Map */
+.brain-layout{display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start}
+.brain-svg-wrap{padding:24px;min-height:500px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+.brain-info{padding:24px;position:sticky;top:32px}
+.brain-info h3{font-size:16px;font-weight:600;margin-bottom:12px}
+.brain-info p{font-size:13px;color:var(--text-dim);line-height:1.7}
+.brain-hormones{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.brain-hormone-tag{padding:4px 10px;border-radius:12px;font-size:11px;font-weight:500}
+.brain-info-header{border-left:3px solid var(--primary);padding-left:12px;margin-bottom:12px}
+
+/* Responsive */
+@media(max-width:1200px){
+  .dashboard-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .hormone-grid{grid-template-columns:repeat(3,1fr)}
+  .brain-layout{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .sidebar{width:60px;min-width:60px;padding:12px 6px}
+  .nav-btn span,.logo-text,.nav-footer span{display:none}
+  .nav-btn{justify-content:center;padding:10px}
+  .main-content{padding:20px}
+  .emotion-grid{grid-template-columns:repeat(3,1fr)}
+  .hormone-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* Emotion Combo Bar */
+.emotion-combo-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:14px 20px;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-lg);backdrop-filter:blur(10px)}
+.combo-count{font-size:13px;color:var(--text-dim);min-width:80px}
+.emotion-combo-bar .btn-primary,.emotion-combo-bar .btn-secondary{font-size:13px;padding:8px 18px}
+
+/* Legend active state */
+.legend-item.active .legend-dot{transform:scale(1.4);box-shadow:0 0 10px currentColor}
+.legend-item{transition:opacity .2s, transform .2s}
+.legend-item:hover{transform:scale(1.05)}
+
+/* Hormone card hover */
+.hormone-card{transition:all .25s ease}
+.hormone-card:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 6px 20px rgba(0,0,0,0.3)}
+
+/* Chart container cursor */
+.chart-container{cursor:crosshair}
+
+/* Pulse animation for active elements */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.pulsing{animation:pulse 1.5s ease-in-out infinite}
+
+/* 3D Brain Rotation */
+.brain3d-scene{perspective:800px;width:100%;height:420px;display:flex;align-items:center;justify-content:center;cursor:grab;user-select:none;overflow:hidden}
+.brain3d-scene:active{cursor:grabbing}
+.brain3d-stage{width:520px;height:420px;position:relative;transform-style:preserve-3d;transition:transform .05s linear}
+
+.brain3d-outline{
+  position:absolute;left:50%;top:50%;width:70%;height:75%;
+  transform:translate(-50%,-50%);
+  border-radius:50% 50% 45% 45%/55% 55% 45% 45%;
+  background:radial-gradient(ellipse at 40% 35%,rgba(99,102,241,0.12),rgba(99,102,241,0.03) 60%,transparent 100%);
+  border:1.5px solid rgba(99,102,241,0.25);
+  box-shadow:0 0 40px rgba(99,102,241,0.08),inset 0 0 30px rgba(99,102,241,0.05);
+  pointer-events:none;
+}
+
+.brain3d-region{transition:all .3s ease;transform:translate(-50%,-50%)}
+.brain3d-region:hover{transform:translate(-50%,-50%) scale(1.18);z-index:10;box-shadow:0 0 20px var(--rc)}
+.brain3d-region.active{transform:translate(-50%,-50%) scale(1.22);z-index:11;box-shadow:0 0 30px var(--rc)}
+
+.brain3d-label{
+  position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);
+  font-size:9px;color:#cbd5e1;white-space:nowrap;
+  text-shadow:0 1px 6px rgba(0,0,0,0.9);
+  pointer-events:none;font-family:Inter,sans-serif;letter-spacing:0.3px;
+  opacity:0.85;transition:opacity .2s;
+}
+.brain3d-region:hover .brain3d-label,.brain3d-region.active .brain3d-label{opacity:1;font-weight:600;color:#fff}
+
+.brain-rotation-hint{text-align:center;font-size:11px;color:var(--text-dim);margin-top:12px;opacity:0.6}
+
+.brain-info h3{font-size:16px;font-weight:600;margin-bottom:12px}
+.brain-info p{font-size:13px;color:var(--text-dim);line-height:1.7}
+.brain-hormones{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.brain-hormone-tag{padding:4px 10px;border-radius:12px;font-size:11px;font-weight:500}
+
+.brain-info-header{padding-left:12px}
+
+/* EEG Monitor Page */
+.eeg-layout{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
+.eeg-main{display:flex;flex-direction:column;gap:20px}
+.eeg-top-row{padding:20px;display:grid;grid-template-columns:180px 1fr;gap:20px;align-items:start}
+.eeg-headmap{width:180px;height:200px;position:relative;border-radius:50% 50% 45% 45%/55% 55% 45% 45%;background:radial-gradient(ellipse at 40% 35%,rgba(6,182,212,0.12),rgba(6,182,212,0.03) 60%,transparent 100%);border:1.5px solid rgba(6,182,212,0.3);flex-shrink:0;overflow:visible}
+.eeg-headmap::before{content:'N';position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text-dim);font-weight:600;letter-spacing:1px}
+.eeg-headmap::after{content:'';position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:16px;height:6px;border-radius:0 0 8px 8px;background:rgba(6,182,212,0.25);border:1px solid rgba(6,182,212,0.3);border-top:none}
+.eeg-electrode{position:absolute;width:18px;height:18px;border-radius:50%;transform:translate(-50%,-50%);cursor:pointer;transition:all .25s ease;display:flex;align-items:center;justify-content:center;z-index:2}
+.eeg-electrode::after{content:attr(data-label);position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--text-dim);white-space:nowrap;pointer-events:none;opacity:0.7;transition:opacity .2s}
+.eeg-electrode:hover{transform:translate(-50%,-50%) scale(1.3);z-index:10}
+.eeg-electrode:hover::after{opacity:1;color:#fff;font-weight:600}
+.eeg-electrode.active{transform:translate(-50%,-50%) scale(1.35);z-index:11}
+.eeg-electrode.active::after{opacity:1;color:#fff;font-weight:600}
+.eeg-status-area{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px}
+.eeg-current-sim{min-height:80px}
+.eeg-sim-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:80px;color:var(--text-dim);text-align:center;gap:8px}
+.eeg-sim-placeholder p{font-size:12px;opacity:0.6}
+.eeg-sim-active{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:var(--radius);background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2)}
+.eeg-sim-active .sim-icon{font-size:20px}
+.eeg-sim-active .sim-info{flex:1;min-width:0}
+.eeg-sim-active .sim-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.eeg-sim-active .sim-meta{font-size:11px;color:var(--text-dim);margin-top:2px}
+
+.eeg-chart-panel{padding:20px}
+.eeg-chart-panel .panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.eeg-chart-panel .panel-header h3{font-size:15px;font-weight:600}
+.eeg-band-controls{display:flex;gap:5px;flex-wrap:wrap}
+.eeg-band-controls .chart-btn{font-size:11px;padding:5px 10px}
+.eeg-chart-container{position:relative;height:440px;background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.eeg-chart-container canvas{width:100%!important;height:100%!important;display:block}
+.eeg-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:14px}
+.eeg-legend .legend-item{font-size:11px}
+.eeg-legend .legend-dot{width:8px;height:8px}
+
+.eeg-sidebar{display:flex;flex-direction:column;gap:16px}
+.eeg-info-panel,.eeg-recent-panel{padding:20px}
+.eeg-info-panel h3,.eeg-recent-panel h3{font-size:14px;font-weight:600;margin-bottom:12px}
+.eeg-recent-panel{max-height:520px;overflow-y:auto}
+.eeg-recent-panel::-webkit-scrollbar{width:4px}
+.eeg-recent-panel::-webkit-scrollbar-thumb{background:rgba(100,100,200,0.2);border-radius:2px}
+.eeg-recent-list{display:flex;flex-direction:column;gap:6px}
+.eeg-recent-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.03);cursor:pointer;transition:all .2s;border:1px solid transparent}
+.eeg-recent-item:hover{background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.2)}
+.eeg-recent-item.active{background:rgba(99,102,241,0.15);border-color:var(--primary)}
+.eeg-recent-icon{width:32px;height:32px;border-radius:8px;background:rgba(99,102,241,0.15);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.eeg-recent-info{flex:1;min-width:0}
+.eeg-recent-info strong{display:block;font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.eeg-recent-info span{font-size:10px;color:var(--text-dim)}
+.band-bars{display:flex;flex-direction:column;gap:10px}
+.band-row{display:flex;align-items:center;gap:10px}
+.band-label{min-width:60px;font-size:11px;color:var(--text-dim);text-align:right;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.band-bar-wrap{flex:1;height:10px;background:rgba(255,255,255,0.05);border-radius:5px;overflow:hidden}
+.band-bar{height:100%;border-radius:5px;transition:width .4s ease}
+.band-pct{width:36px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text-dim)}
+
+.eeg-channel-detail{margin-top:16px}
+.eeg-channel-detail .ch-name{font-size:16px;font-weight:700;margin-bottom:4px}
+.eeg-channel-detail .ch-region{font-size:12px;color:var(--text-dim);margin-bottom:12px}
+.eeg-channel-detail .ch-spark{height:48px;width:100%}
+.eeg-channel-detail .ch-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.eeg-channel-detail .ch-stat{padding:8px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border)}
+.eeg-channel-detail .ch-stat-label{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px}
+.eeg-channel-detail .ch-stat-value{font-size:14px;font-weight:600;font-family:'JetBrains Mono',monospace;margin-top:2px}
+
+@media(max-width:1200px){
+  .eeg-layout{grid-template-columns:1fr}
+  .eeg-sidebar{flex-direction:row}
+  .eeg-info-panel,.eeg-recent-panel{flex:1}
+}
+@media(max-width:768px){
+  .eeg-top-row{grid-template-columns:1fr}
+  .eeg-headmap{margin:0 auto}
+  .eeg-sidebar{flex-direction:column}
+}
+@media(max-width:768px){
+  .eeg-controls{grid-template-columns:1fr}
+  .eeg-headmap{margin:0 auto}
+  .eeg-sidebar{flex-direction:column}
+}

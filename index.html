@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeuroSim - Brain Hormone Simulation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=compact">
+</head>
+<body>
+  <div class="app">
+    <nav class="sidebar">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="20" stroke="url(#logoGrad)" stroke-width="2"/>
+            <path d="M24 8C15.2 8 8 15.2 8 24s7.2 16 16 16 16-7.2 16-16S32.8 8 24 8zm0 4c2.8 0 5.2 1.2 7 3-1.2-.8-2.8-1.2-4.4-1.2-3.2 0-6 1.8-7.4 4.4C17.8 14 18.8 12 20 10.8c1.4-.6 2.8-.8 4-.8zm-8 12c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8-8-3.6-8-8z" fill="url(#logoGrad)" opacity="0.6"/>
+            <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="48" y2="48"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">NeuroSim</span>
+          <span class="logo-sub">Brain Hormone Lab</span>
+        </div>
+      </div>
+      <div class="nav-items">
+        <button class="nav-btn active" data-page="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-btn" data-page="simulator">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          <span>Simulator</span>
+        </button>
+        <button class="nav-btn" data-page="emotions">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          <span>Emotions</span>
+        </button>
+        <button class="nav-btn" data-page="brain">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A5.5 5.5 0 0 0 4 7.5c0 1.58.67 3 1.74 4.01L12 22l6.26-10.49A5.49 5.49 0 0 0 20 7.5 5.5 5.5 0 0 0 14.5 2a5.5 5.5 0 0 0-5 3.15A5.5 5.5 0 0 0 9.5 2z"/></svg>
+          <span>Brain Map</span>
+        </button>
+        <button class="nav-btn" data-page="eeg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h2l3-8 4 16 4-12 3 6h4"/></svg>
+          <span>EEG Monitor</span>
+        </button>
+      </div>
+      <div class="nav-footer">
+        <div class="status-indicator" id="apiStatus">
+          <span class="status-dot"></span>
+          <span>System Offline</span>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <section class="page active" id="page-dashboard">
+        <div class="page-header">
+          <h1>Neural Dashboard</h1>
+          <p>Real-time hormone response modeling powered by ML</p>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card glass">
+            <div class="stat-icon" style="--accent: #6366f1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value" id="totalSims">0</span>
+              <span class="stat-label">Simulations Run</span>
+            </div>
+          </div>
+          <div class="stat-card glass">
+            <div class="stat-icon" style="--accent: #06b6d4">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value" id="modelStatus">Loading</span>
+              <span class="stat-label">ML Model</span>
+            </div>
+          </div>
+          <div class="stat-card glass">
+            <div class="stat-icon" style="--accent: #10b981">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">10</span>
+              <span class="stat-label">Hormones Tracked</span>
+            </div>
+          </div>
+          <div class="stat-card glass">
+            <div class="stat-icon" style="--accent: #f59e0b">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">16</span>
+              <span class="stat-label">Time Phases</span>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-grid">
+          <div class="chart-panel glass">
+            <div class="panel-header">
+              <h3>Hormone Response Timeline</h3>
+              <div class="chart-controls">
+                <button class="chart-btn active" data-filter="all">All</button>
+                <button class="chart-btn" data-filter="stress">Stress</button>
+                <button class="chart-btn" data-filter="reward">Reward</button>
+                <button class="chart-btn" data-filter="social">Social</button>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="hormoneChart"></canvas>
+            </div>
+            <div class="chart-legend" id="chartLegend"></div>
+          </div>
+          <div class="recent-panel glass">
+            <div class="panel-header">
+              <h3>Recent Simulations</h3>
+            </div>
+            <div class="recent-list" id="recentList">
+              <p class="empty-state">No simulations yet. Try one from the Simulator tab!</p>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-bands glass" id="dashboardBands">
+          <div class="panel-header">
+            <h3>Brainwave Band Powers</h3>
+          </div>
+          <div class="dashboard-band-bars" id="dashboardBandBars">
+            <p class="empty-state">Run a simulation to see brainwave activity</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-simulator">
+        <div class="page-header">
+          <h1>Scenario Simulator</h1>
+          <p>Describe any situation and watch your brain's hormone response unfold</p>
+        </div>
+        <div class="sim-input-area glass">
+          <div class="input-group">
+            <textarea id="scenarioInput" rows="3" placeholder="Describe a scenario... e.g. 'You narrowly avoid a car accident' or 'Your best friend gives you an unexpected gift'"></textarea>
+            <button class="btn-primary" id="simulateBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>
+              Simulate
+            </button>
+          </div>
+          <div class="quick-tags">
+            <button class="tag-btn" data-scenario="You narrowly avoid a car accident on the way home">Near-miss accident</button>
+            <button class="tag-btn" data-scenario="You have to speak in front of a large audience">Public speaking</button>
+            <button class="tag-btn" data-scenario="You win an important competition">Winning competition</button>
+            <button class="tag-btn" data-scenario="You rescue someone from the ocean">Heroic rescue</button>
+            <button class="tag-btn" data-scenario="Someone gives you an unexpected gift">Unexpected gift</button>
+            <button class="tag-btn" data-scenario="You encounter a spider in your room">Spider encounter</button>
+            <button class="tag-btn" data-scenario="You are preparing for a job interview">Job interview</button>
+            <button class="tag-btn" data-scenario="You lose your phone and wallet">Lost belongings</button>
+            <button class="tag-btn" data-scenario="You meditate in a peaceful garden">Meditation</button>
+            <button class="tag-btn" data-scenario="You hug your best friend after a long time">Reunion hug</button>
+          </div>
+        </div>
+        <div class="sim-result glass" id="simResult">
+          <div class="result-placeholder">
+            <div class="placeholder-icon">
+              <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><circle cx="32" cy="32" r="28"/><path d="M32 16v16l12 8"/></svg>
+            </div>
+            <p>Enter a scenario above to see the hormone response</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-emotions">
+        <div class="page-header">
+          <h1>Emotion Lab</h1>
+          <p>24 emotions — click any to simulate its hormone response, or combine multiple</p>
+        </div>
+        <div class="emotion-grid" id="emotionGrid"></div>
+        <div class="emotion-result glass" id="emotionResult">
+          <div class="result-placeholder">
+            <p>Select an emotion above to begin</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-brain">
+        <div class="page-header">
+          <h1>Brain Region Map</h1>
+          <p>Explore how different brain regions produce and respond to hormones</p>
+        </div>
+        <div class="brain-layout">
+          <div class="brain-svg-wrap glass">
+            <div class="brain3d-scene" id="brain3d">
+              <div class="brain3d-stage" id="brainStage"></div>
+            </div>
+            <div class="brain-rotation-hint">Drag to rotate · Click region for details</div>
+          </div>
+          <div class="brain-info glass" id="brainInfo">
+            <h3>Hover over a brain region</h3>
+            <p>Select a region to see its hormone connections</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-eeg">
+        <div class="page-header">
+          <h1>EEG Signal Monitor</h1>
+          <p>Real-time 10-channel electroencephalogram — linked to your simulations</p>
+        </div>
+        <div class="eeg-layout">
+          <div class="eeg-main">
+            <div class="eeg-top-row glass">
+              <div class="eeg-headmap" id="eegHeadmap"></div>
+              <div class="eeg-status-area">
+                <div class="eeg-current-sim" id="eegCurrentSim">
+                  <div class="eeg-sim-placeholder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28" opacity="0.3"><path d="M2 12h2l3-8 4 16 4-12 3 6h4"/></svg>
+                    <p>Run a simulation from the Simulator or Emotions tab to see EEG activity</p>
+                  </div>
+                </div>
+                <div class="eeg-band-panel glass" id="eegBandPanel">
+                  <h3>Brainwave Bands</h3>
+                  <div class="band-bars" id="bandBars"></div>
+                </div>
+              </div>
+            </div>
+            <div class="eeg-chart-panel glass">
+              <div class="panel-header">
+                <h3 id="eegChartTitle">EEG Waveforms — 10-20 System</h3>
+                <div class="eeg-band-controls">
+                  <button class="chart-btn active" data-band="all">All Bands</button>
+                  <button class="chart-btn" data-band="delta">Delta 0.5-4Hz</button>
+                  <button class="chart-btn" data-band="theta">Theta 4-8Hz</button>
+                  <button class="chart-btn" data-band="alpha">Alpha 8-13Hz</button>
+                  <button class="chart-btn" data-band="beta">Beta 13-30Hz</button>
+                  <button class="chart-btn" data-band="gamma">Gamma 30-45Hz</button>
+                </div>
+              </div>
+              <div class="eeg-chart-container">
+                <canvas id="eegChart"></canvas>
+              </div>
+              <div class="eeg-legend" id="eegLegend"></div>
+            </div>
+          </div>
+          <div class="eeg-sidebar">
+            <div class="eeg-info-panel glass" id="eegInfoPanel">
+              <h3>Channel Info</h3>
+              <p style="color:var(--text-dim);font-size:13px;margin-top:8px">Click a channel on the head map or legend to inspect</p>
+            </div>
+            <div class="eeg-recent-panel glass">
+              <div class="panel-header"><h3>Recent Simulations</h3></div>
+              <div class="eeg-recent-list" id="eegRecentList">
+                <p class="empty-state">No simulations yet</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js?v=26eegfix"></script>
+</body>
+</html>
